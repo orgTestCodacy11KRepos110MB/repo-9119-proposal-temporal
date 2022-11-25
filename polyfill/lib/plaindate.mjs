@@ -94,7 +94,7 @@ export class PlainDate {
     if (ES.Type(temporalDateLike) !== 'Object') {
       throw new TypeError('invalid argument');
     }
-    ES.RejectObjectWithCalendarOrTimeZone(temporalDateLike);
+    ES.RejectTemporalObject(temporalDateLike);
 
     const calendar = GetSlot(this, CALENDAR);
     const fieldNames = ES.CalendarFields(calendar, ['day', 'month', 'monthCode', 'year']);
