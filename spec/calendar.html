@@ -800,15 +800,18 @@
         <dd>It implements the default logic for the `Temporal.Calendar.prototype.mergeFields` method, which is used for the ISO 8601 calendar and as a fallback if the method is not present on a calendar.</dd>
       </dl>
       <emu-alg>
-        1. Let _merged_ be OrdinaryObjectCreate(%Object.prototype%).
-        1. Perform ? CopyDataProperties(_merged_, _fields_, « », « *undefined* »).
         1. Let _additionalFieldsCopy_ be OrdinaryObjectCreate(*null*).
         1. Perform ? CopyDataProperties(_additionalFieldsCopy_, _additionalFields_, « », « *undefined* »).
         1. NOTE: Every property of _additionalFieldsCopy_ is a data property with non-*undefined* value, but some property keys may be Symbols.
-        1. If ! _additionalFieldsCopy_.[[OwnPropertyKeys]]() contains *"month"* or *"monthCode"*, then
-          1. Perform ! DeletePropertyOrThrow(_merged_, *"month"*).
-          1. Perform ! DeletePropertyOrThrow(_merged_, *"monthCode"*).
-        1. Perform ? CopyDataProperties(_merged_, _additionalFieldsCopy_, « »).
+        1. Let _excludedKeys_ be « ».
+        1. Let _additionalKeys_ be ! _additionalFieldsCopy_.[[OwnPropertyKeys]]().
+        1. For each element _key_ of _additionalKeys_, do
+          1. Append _key_ to _excludedKeys_.
+          1. If _key_ is *"month"*, append *"monthCode"* to _excludedKeys_.
+          1. Else if _key_ is *"monthCode"*, append *"month"* to _excludedKeys_.
+        1. Let _merged_ be OrdinaryObjectCreate(%Object.prototype%).
+        1. Perform ? CopyDataProperties(_merged_, _fields_, _excludedKeys_, « *undefined* »).
+        1. Perform ! CopyDataProperties(_merged_, _additionalFieldsCopy_, « »).
         1. Return _merged_.
       </emu-alg>
     </emu-clause>
