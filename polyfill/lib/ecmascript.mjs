@@ -340,7 +340,7 @@ export const ES = ObjectAssign({}, ES2022, {
   },
   MaybeFormatCalendarAnnotation: (calendar, showCalendar) => {
     if (showCalendar === 'never') return '';
-    return ES.FormatCalendarAnnotation(ES.ToString(calendar), showCalendar);
+    return ES.FormatCalendarAnnotation(ES.ToString(ES.ToTemporalCalendarObject(calendar)), showCalendar);
   },
   FormatCalendarAnnotation: (id, showCalendar) => {
     if (showCalendar === 'never') return '';
@@ -1560,6 +1560,11 @@ export const ES = ObjectAssign({}, ES2022, {
     return new TemporalCalendar('iso8601');
   },
   CalendarFields: (calendar, fieldNames) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.fields%'), calendar, [fieldNames]);
+    }
     const fields = ES.GetMethod(calendar, 'fields');
     if (fields === undefined) return fieldNames;
     fieldNames = ES.Call(fields, calendar, [fieldNames]);
@@ -1571,6 +1576,11 @@ export const ES = ObjectAssign({}, ES2022, {
     return result;
   },
   CalendarMergeFields: (calendar, fields, additionalFields) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.mergeFields%'), calendar, [fields, additionalFields]);
+    }
     const mergeFields = ES.GetMethod(calendar, 'mergeFields');
     if (mergeFields === undefined) return { ...fields, ...additionalFields };
     const result = ES.Call(mergeFields, calendar, [fields, additionalFields]);
@@ -1578,6 +1588,11 @@ export const ES = ObjectAssign({}, ES2022, {
     return result;
   },
   CalendarDateAdd: (calendar, date, duration, options, dateAdd) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.dateAdd%'), calendar, [date, duration, options]);
+    }
     if (dateAdd === undefined) {
       dateAdd = ES.GetMethod(calendar, 'dateAdd');
     }
@@ -1586,6 +1601,11 @@ export const ES = ObjectAssign({}, ES2022, {
     return result;
   },
   CalendarDateUntil: (calendar, date, otherDate, options, dateUntil) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.dateUntil%'), calendar, [date, otherDate, options]);
+    }
     if (dateUntil === undefined) {
       dateUntil = ES.GetMethod(calendar, 'dateUntil');
     }
@@ -1594,16 +1614,31 @@ export const ES = ObjectAssign({}, ES2022, {
     return result;
   },
   CalendarYear: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.year%'), calendar, [dateLike]);
+    }
     const year = ES.GetMethod(calendar, 'year');
     const result = ES.Call(year, calendar, [dateLike]);
     return ES.ToIntegerWithTruncation(result);
   },
   CalendarMonth: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.month%'), calendar, [dateLike]);
+    }
     const month = ES.GetMethod(calendar, 'month');
     const result = ES.Call(month, calendar, [dateLike]);
     return ES.ToPositiveIntegerWithTruncation(result);
   },
   CalendarMonthCode: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.monthCode%'), calendar, [dateLike]);
+    }
     const monthCode = ES.GetMethod(calendar, 'monthCode');
     const result = ES.Call(monthCode, calendar, [dateLike]);
     if (result === undefined) {
@@ -1612,11 +1647,21 @@ export const ES = ObjectAssign({}, ES2022, {
     return ES.ToString(result);
   },
   CalendarDay: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.day%'), calendar, [dateLike]);
+    }
     const day = ES.GetMethod(calendar, 'day');
     const result = ES.Call(day, calendar, [dateLike]);
     return ES.ToPositiveIntegerWithTruncation(result);
   },
   CalendarEra: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.era%'), calendar, [dateLike]);
+    }
     const era = ES.GetMethod(calendar, 'era');
     let result = ES.Call(era, calendar, [dateLike]);
     if (result !== undefined) {
@@ -1625,6 +1670,11 @@ export const ES = ObjectAssign({}, ES2022, {
     return result;
   },
   CalendarEraYear: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.eraYear%'), calendar, [dateLike]);
+    }
     const eraYear = ES.GetMethod(calendar, 'eraYear');
     let result = ES.Call(eraYear, calendar, [dateLike]);
     if (result !== undefined) {
@@ -1633,39 +1683,84 @@ export const ES = ObjectAssign({}, ES2022, {
     return result;
   },
   CalendarDayOfWeek: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.dayOfWeek%'), calendar, [dateLike]);
+    }
     const dayOfWeek = ES.GetMethod(calendar, 'dayOfWeek');
     return ES.ToPositiveIntegerWithTruncation(ES.Call(dayOfWeek, calendar, [dateLike]));
   },
   CalendarDayOfYear: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.dayOfYear%'), calendar, [dateLike]);
+    }
     const dayOfYear = ES.GetMethod(calendar, 'dayOfYear');
     return ES.ToPositiveIntegerWithTruncation(ES.Call(dayOfYear, calendar, [dateLike]));
   },
   CalendarWeekOfYear: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.weekOfYear%'), calendar, [dateLike]);
+    }
     const weekOfYear = ES.GetMethod(calendar, 'weekOfYear');
     return ES.ToPositiveIntegerWithTruncation(ES.Call(weekOfYear, calendar, [dateLike]));
   },
   CalendarYearOfWeek: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.yearOfWeek%'), calendar, [dateLike]);
+    }
     const yearOfWeek = ES.GetMethod(calendar, 'yearOfWeek');
     const result = ES.Call(yearOfWeek, calendar, [dateLike]);
     return ES.ToIntegerWithTruncation(result);
   },
   CalendarDaysInWeek: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.daysInWeek%'), calendar, [dateLike]);
+    }
     const daysInWeek = ES.GetMethod(calendar, 'daysInWeek');
     return ES.ToPositiveIntegerWithTruncation(ES.Call(daysInWeek, calendar, [dateLike]));
   },
   CalendarDaysInMonth: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.daysInMonth%'), calendar, [dateLike]);
+    }
     const daysInMonth = ES.GetMethod(calendar, 'daysInMonth');
     return ES.ToPositiveIntegerWithTruncation(ES.Call(daysInMonth, calendar, [dateLike]));
   },
   CalendarDaysInYear: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.daysInYear%'), calendar, [dateLike]);
+    }
     const daysInYear = ES.GetMethod(calendar, 'daysInYear');
     return ES.ToPositiveIntegerWithTruncation(ES.Call(daysInYear, calendar, [dateLike]));
   },
   CalendarMonthsInYear: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.monthsInYear%'), calendar, [dateLike]);
+    }
     const monthsInYear = ES.GetMethod(calendar, 'monthsInYear');
     return ES.ToPositiveIntegerWithTruncation(ES.Call(monthsInYear, calendar, [dateLike]));
   },
   CalendarInLeapYear: (calendar, dateLike) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.inLeapYear%'), calendar, [dateLike]);
+    }
     const inLeapYear = ES.GetMethod(calendar, 'inLeapYear');
     return !!ES.Call(inLeapYear, calendar, [dateLike]);
   },
@@ -1693,8 +1788,7 @@ export const ES = ObjectAssign({}, ES2022, {
       }
     }
     const identifier = ES.ToString(calendarLike);
-    const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
-    if (ES.IsBuiltinCalendar(identifier)) return new TemporalCalendar(identifier);
+    if (ES.IsBuiltinCalendar(identifier)) return ES.ASCIILowercase(identifier);
     let calendar;
     try {
       ({ calendar } = ES.ParseISODateTime(identifier));
@@ -1706,13 +1800,25 @@ export const ES = ObjectAssign({}, ES2022, {
       }
     }
     if (!calendar) calendar = 'iso8601';
-    return new TemporalCalendar(calendar);
+    if (!ES.IsBuiltinCalendar(calendar)) throw new RangeError(`invalid calendar identifier ${calendar}`);
+    return ES.ASCIILowercase(calendar);
   },
   GetTemporalCalendarWithISODefault: (item) => {
     if (HasSlot(item, CALENDAR)) return GetSlot(item, CALENDAR);
     const { calendar } = item;
     if (calendar === undefined) return ES.GetISO8601Calendar();
     return ES.ToTemporalCalendar(calendar);
+  },
+  ToTemporalCalendarIdentifier: (slotValue) => {
+    if (typeof slotValue === 'string') return slotValue;
+    const result = slotValue.id;
+    if (typeof result !== 'string') throw new TypeError('calendar.id should be a string');
+    return result;
+  },
+  ToTemporalCalendarObject: (slotValue) => {
+    if (ES.Type(slotValue) === 'Object') return slotValue;
+    const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+    return new TemporalCalendar(slotValue);
   },
   CalendarEquals: (one, two) => {
     if (one === two) return true;
@@ -1745,18 +1851,33 @@ export const ES = ObjectAssign({}, ES2022, {
     }
   },
   CalendarDateFromFields: (calendar, fields, options) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.dateFromFields%'), calendar, [fields, options]);
+    }
     const dateFromFields = ES.GetMethod(calendar, 'dateFromFields');
     const result = ES.Call(dateFromFields, calendar, [fields, options]);
     if (!ES.IsTemporalDate(result)) throw new TypeError('invalid result');
     return result;
   },
   CalendarYearMonthFromFields: (calendar, fields, options) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.yearMonthFromFields%'), calendar, [fields, options]);
+    }
     const yearMonthFromFields = ES.GetMethod(calendar, 'yearMonthFromFields');
     const result = ES.Call(yearMonthFromFields, calendar, [fields, options]);
     if (!ES.IsTemporalYearMonth(result)) throw new TypeError('invalid result');
     return result;
   },
   CalendarMonthDayFromFields: (calendar, fields, options) => {
+    if (typeof calendar === 'string') {
+      const TemporalCalendar = GetIntrinsic('%Temporal.Calendar%');
+      calendar = new TemporalCalendar(calendar);
+      return ES.Call(GetIntrinsic('%Temporal.Calendar.prototype.monthDayFromFields%'), calendar, [fields, options]);
+    }
     const monthDayFromFields = ES.GetMethod(calendar, 'monthDayFromFields');
     const result = ES.Call(monthDayFromFields, calendar, [fields, options]);
     if (!ES.IsTemporalMonthDay(result)) throw new TypeError('invalid result');
