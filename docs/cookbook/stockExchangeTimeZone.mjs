@@ -124,6 +124,9 @@ class NYSETimeZone extends Temporal.TimeZone {
     const ns = zdt.offsetNanoseconds + zdt.until(zdtWhenMarketIsOpen, { largestUnit: 'nanosecond' }).nanoseconds;
     return ns;
   }
+  get id() {
+    return 'NYSE';
+  }
   toString() {
     return 'NYSE';
   }
