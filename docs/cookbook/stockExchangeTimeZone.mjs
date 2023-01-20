@@ -130,6 +130,9 @@ class NYSETimeZone extends Temporal.TimeZone {
   toString() {
     return 'NYSE';
   }
+  toJSON() {
+    return 'NYSE';
+  }
 }
 
 const tzNYSE = Object.freeze(new NYSETimeZone());
